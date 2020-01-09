@@ -22,16 +22,16 @@ build(Entity, Obj, InQuery) ->
         {insert, InQuery#{values => eorm_object:attrs_with(DbFields, Obj)}}),
     Table = eorm:get_table(Entity, {insert, Query}),
     State = #{
-        entity => Entity,
-        'query' => Query#{table => Table},
-        expr => new_expr()
-    },
+              entity => Entity,
+              'query' => Query#{table => Table},
+              expr => new_expr()
+             },
     erlz:do(State, [
-        fun build_table/1
-        ,fun build_values/1
-        ,fun eorm_builder_returning:build_sql/1
-        ,fun eorm_builder:build_sql/1
-    ]).
+                    fun build_table/1
+                   ,fun build_values/1
+                   ,fun eorm_builder_returning:build_sql/1
+                   ,fun eorm_builder:build_sql/1
+                   ]).
 
 build_table(#{'query' := #{table := Table}, expr := #{sql := SQL} = Expr} = State) ->
     State#{expr => Expr#{sql => SQL ++ [Table]}}.

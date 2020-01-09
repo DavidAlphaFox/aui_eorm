@@ -161,16 +161,17 @@ insert(Obj, Query) ->
     insert(undefined, Obj, Query).
 
 insert(Conn, Obj, InQuery) ->
+    %% 获得元信息
     Entity = eorm:get_entity(eorm_object:type(Obj)),
     DbObj = eorm:transform_to(db, Obj),
     State = eorm_builder_insert:build(Entity, DbObj, InQuery),
     #{
-        'query':= Query,
-        expr := #{
-            sql := SQL,
-            bindings := Bindings
-        }
-    } = State,
+      'query':= Query,
+      expr := #{
+                sql := SQL,
+                bindings := Bindings
+               }
+     } = State,
     Connection = case Conn of
         undefined -> eorm:get_connection(Entity, {insert, Query});
         _ -> Conn
@@ -179,14 +180,14 @@ insert(Conn, Obj, InQuery) ->
         #{as_sql := true} -> {ok, SQL};
         _ ->
             erlz:error_do([
-                erlz:partial(fun exec_query/3, [Connection, SQL, Bindings])
-                ,fun({_Count, [Row]}) ->
-                    UpdObj = eorm_object:merge_attrs(
-                        maps:from_list(Row),
-                        Obj),
-                    {ok, UpdObj}
-                end
-            ])
+                           erlz:partial(fun exec_query/3, [Connection, SQL, Bindings])
+                          ,fun({_Count, [Row]}) ->
+                                   UpdObj = eorm_object:merge_attrs(
+                                              maps:from_list(Row),
+                                              Obj),
+                                   {ok, UpdObj}
+                           end
+                          ])
     end.
 
 update(Obj) ->

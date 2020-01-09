@@ -43,7 +43,7 @@ to_dataSet(Objs) when is_list(Objs) ->
     '-to_dataSet_by_linked'(Objs,NewAccIin).
 
 %%==============
-
+%% 创建新的数据对象
 new(Type, Attrs) when is_atom(Type) ->
     new({Type,undefined}, Attrs);
 new({Type,DataSourceName}, Attrs) when is_atom(Type) ->
